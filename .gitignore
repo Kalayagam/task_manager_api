@@ -1,0 +1,13 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/TaskManager.Business/bin
+/TaskManager.Business/obj
+/TaskManagerApi/bin
+/TaskManagerApi/obj
+/TaskManager.Repository/obj
+/TaskManager.Repository/bin/Debug/netcoreapp2.1
+/TaskManager.Core/bin/Debug/netcoreapp2.1
+/TaskManager.Core/obj
