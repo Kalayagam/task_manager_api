@@ -11,3 +11,5 @@
 /TaskManager.Repository/bin/Debug/netcoreapp2.1
 /TaskManager.Core/bin/Debug/netcoreapp2.1
 /TaskManager.Core/obj
+/TaskManager.Test/bin/Debug/netcoreapp2.1
+/TaskManager.Test/obj
