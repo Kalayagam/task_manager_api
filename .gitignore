@@ -13,3 +13,6 @@
 /TaskManager.Core/obj
 /TaskManager.Test/bin/Debug/netcoreapp2.1
 /TaskManager.Test/obj
+/TaskManager.Core/bin/Release/netcoreapp2.1
+/TaskManager.Repository/bin/Release/netcoreapp2.1
+/TaskManagerApi/Properties/PublishProfiles
