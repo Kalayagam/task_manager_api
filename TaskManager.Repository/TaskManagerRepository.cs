@@ -25,15 +25,26 @@ namespace TaskManager.Repository
             return await Task.FromResult(_taskDbContext.TaskDetails.FirstOrDefault(x => x.Id == id));
         }
 
+        public async Task<ParentTask> GetParentTask(int id)
+        {
+            return await Task.FromResult(_taskDbContext.ParentTasks.FirstOrDefault(x => x.Id == id));
+        }
+
         public async Task Add(TaskDetails taskDetails)
         {
             _taskDbContext.TaskDetails.Add(taskDetails);
             await _taskDbContext.SaveChangesAsync();
         }
 
+        public async Task Add(ParentTask parentTask)
+        {
+            _taskDbContext.ParentTasks.Add(parentTask);
+            await _taskDbContext.SaveChangesAsync();
+        }
+
         public async Task Update(TaskDetails taskDetailsToBeUpdated, TaskDetails taskDetails)
         {
-            taskDetailsToBeUpdated.ParentId = taskDetails.ParentId;
+            taskDetailsToBeUpdated.ParentTask = taskDetails.ParentTask;
             taskDetailsToBeUpdated.Priority = taskDetails.Priority;
             taskDetailsToBeUpdated.StartDate = taskDetails.StartDate;
             taskDetailsToBeUpdated.TaskName = taskDetails.TaskName;

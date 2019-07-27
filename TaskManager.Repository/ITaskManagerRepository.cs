@@ -12,11 +12,14 @@ namespace TaskManager.Repository
 
         Task<TEntity> Get(int id);
 
+        Task<ParentTask> GetParentTask(int id);
+
         Task Add(TEntity entity);
+
+        Task Add(ParentTask parentTask);
 
         Task Update(TEntity entityToBeUpdated, TEntity entity);
 
-        Task Delete(TaskDetails entity);
-
+        Task Delete(TEntity entity);
     }
 }

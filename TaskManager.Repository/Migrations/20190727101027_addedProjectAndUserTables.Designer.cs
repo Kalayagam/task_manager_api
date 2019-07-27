@@ -3,34 +3,23 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskManager.Repository.Context;
 
 namespace TaskManager.Repository.Migrations
 {
     [DbContext(typeof(TaskDbContext))]
-    partial class TaskDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190727101027_addedProjectAndUserTables")]
+    partial class addedProjectAndUserTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.1.11-servicing-32099")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("TaskManager.Repository.Context.ParentTask", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("TaskName");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ParentTasks");
-                });
 
             modelBuilder.Entity("TaskManager.Repository.Context.Project", b =>
                 {
@@ -59,7 +48,7 @@ namespace TaskManager.Repository.Migrations
 
                     b.Property<DateTime>("EndDate");
 
-                    b.Property<int?>("ParentTaskId");
+                    b.Property<int>("ParentId");
 
                     b.Property<int>("Priority");
 
@@ -67,13 +56,9 @@ namespace TaskManager.Repository.Migrations
 
                     b.Property<DateTime>("StartDate");
 
-                    b.Property<int>("Status");
-
                     b.Property<string>("TaskName");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ParentTaskId");
 
                     b.HasIndex("ProjectId");
 
@@ -107,10 +92,6 @@ namespace TaskManager.Repository.Migrations
 
             modelBuilder.Entity("TaskManager.Repository.Context.TaskDetails", b =>
                 {
-                    b.HasOne("TaskManager.Repository.Context.ParentTask", "ParentTask")
-                        .WithMany()
-                        .HasForeignKey("ParentTaskId");
-
                     b.HasOne("TaskManager.Repository.Context.Project", "Project")
                         .WithMany()
                         .HasForeignKey("ProjectId");

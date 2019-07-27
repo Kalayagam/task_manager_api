@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskManager.Repository.Context;
 
 namespace TaskManager.Repository.Migrations
 {
     [DbContext(typeof(TaskDbContext))]
-    partial class TaskDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190727103906_Added_ParentTask_And_TaskStatus")]
+    partial class Added_ParentTask_And_TaskStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -29,7 +31,7 @@ namespace TaskManager.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ParentTasks");
+                    b.ToTable("ParentTask");
                 });
 
             modelBuilder.Entity("TaskManager.Repository.Context.Project", b =>

@@ -28,8 +28,8 @@ namespace TaskManager.Business
                 {
                     Id = taskEntity.Id,
                     TaskName = taskEntity.TaskName,
-                    ParentId = taskEntity.ParentId,
-                    ParentTaskName = GetParentTaskName(taskEntity.ParentId, taskEntities) ?? string.Empty,
+                    ParentId = GetParentTaskId(taskEntity),
+                    ParentTaskName = taskEntity.ParentTask?.TaskName,
                     Priority = taskEntity.Priority,
                     StartDate = taskEntity.StartDate,
                     EndDate = taskEntity.EndDate
@@ -51,15 +51,14 @@ namespace TaskManager.Business
             var taskViewModel = new TaskViewModel()
             {
                 TaskName = taskEntity.TaskName,
-                ParentId = taskEntity.ParentId,
+                ParentId = GetParentTaskId(taskEntity),
                 Priority = taskEntity.Priority,
                 StartDate = taskEntity.StartDate,
                 EndDate = taskEntity.EndDate,
             };
 
             return taskViewModel;
-        }
-
+        }       
 
         public async Task AddTask(TaskViewModel taskDetails)
         {
@@ -68,18 +67,26 @@ namespace TaskManager.Business
                 throw new TaskDetailsException(ErrorCodes.TaskBadRequestResponse, "Task is empty");
             }
 
-            var taskEntity = new TaskDetails()
+            if(taskDetails.IsParentTask)
             {
-                TaskName = taskDetails.TaskName,
-                ParentId = taskDetails.ParentId,
-                Priority = taskDetails.Priority,
-                StartDate = taskDetails.StartDate,
-                EndDate = taskDetails.EndDate,
+               await AddParentTask(taskDetails);
+            }
+            else
+            {
+                var taskEntity = new TaskDetails()
+                {
+                    TaskName = taskDetails.TaskName,
+                    ParentTask = await GetParentTask(taskDetails),
+                    Priority = taskDetails.Priority,
+                    StartDate = taskDetails.StartDate,
+                    EndDate = taskDetails.EndDate,
+                };
 
-            };
+                await _taskManagerRepository.Add(taskEntity);
+            }
 
-            await _taskManagerRepository.Add(taskEntity);
-        }
+           
+        }       
 
         public async Task UpdateTask(TaskViewModel taskDetails)
         {
@@ -91,7 +98,7 @@ namespace TaskManager.Business
             var taskEntity = new TaskDetails()
             {
                 TaskName = taskDetails.TaskName,
-                ParentId = taskDetails.ParentId,
+                ParentTask = await GetParentTask(taskDetails),
                 Priority = taskDetails.Priority,
                 StartDate = taskDetails.StartDate,
                 EndDate = taskDetails.EndDate,
@@ -115,10 +122,24 @@ namespace TaskManager.Business
             await _taskManagerRepository.Delete(taskEntity);
         }
 
-        private string GetParentTaskName(int parentId, IEnumerable<TaskDetails> taskEntities)
+        private async Task AddParentTask(TaskViewModel taskDetails)
         {
-            return taskEntities.FirstOrDefault(task => task.Id == parentId)?.TaskName;
+            var taskEntity = new ParentTask()
+            {
+                TaskName = taskDetails.TaskName
+            };
+
+            await _taskManagerRepository.Add(taskEntity);
         }
 
+        private static int GetParentTaskId(TaskDetails taskEntity)
+        {
+            return taskEntity.ParentTask?.Id ?? 0;
+        }
+
+        private async Task<ParentTask> GetParentTask(TaskViewModel taskDetails)
+        {
+            return taskDetails.ParentId == 0 ? null : await _taskManagerRepository.GetParentTask(taskDetails.ParentId);
+        }
     }
 }

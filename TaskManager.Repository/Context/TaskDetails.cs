@@ -6,9 +6,7 @@ namespace TaskManager.Repository.Context
 {
     public class TaskDetails
     {
-        public int Id { get; set; }
-
-        public int ParentId { get; set; }
+        public int Id { get; set; }       
 
         public string TaskName { get; set; }
 
@@ -17,5 +15,17 @@ namespace TaskManager.Repository.Context
         public DateTime EndDate { get; set; }
 
         public int Priority { get; set; }
+
+        public ParentTask ParentTask { get; set; }
+
+        public TaskStatus Status { get; set; }
+
+        public Project Project { get; set; }
+    }
+
+    public enum TaskStatus
+    {
+        InProgress,
+        Complete
     }
 }

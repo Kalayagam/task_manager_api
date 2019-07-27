@@ -12,5 +12,11 @@ namespace TaskManager.Repository.Context
         }
 
         public DbSet<TaskDetails> TaskDetails { get; set; }
+
+        public DbSet<Project> Projects { get; set; }
+
+        public DbSet<User> Users { get; set; }
+
+        public DbSet<ParentTask> ParentTasks { get; set; }
     }
 }
