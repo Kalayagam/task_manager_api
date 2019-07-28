@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TaskManager.Repository.Context
+namespace TaskManager.Core.Model
 {
-    public class Project
+    public class ProjectViewModel
     {
         public int Id { get; set; }
 
-        public string ProjectName { get; set; }
+        public string Name { get; set; }
 
         public DateTime StartDate { get; set; }
 
@@ -16,6 +16,8 @@ namespace TaskManager.Repository.Context
 
         public int Priority { get; set; }
 
-        public List<TaskDetails> Tasks { get; set; }
+        public int TotalNumberOfTasks { get; set; }
+
+        public int NumberOfTasksCompleted { get; set; }
     }
 }

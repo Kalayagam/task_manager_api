@@ -17,4 +17,18 @@ namespace TaskManager.Core.Exceptions
             ErrorNumber = errorNumber;
         }
     }
+
+    public class ProjectException : Exception
+    {
+        public int ErrorNumber { get; set; }
+        public ProjectException()
+        {
+
+        }
+
+        public ProjectException(int errorNumber, string message) : base(message)
+        {
+            ErrorNumber = errorNumber;
+        }
+    }
 }

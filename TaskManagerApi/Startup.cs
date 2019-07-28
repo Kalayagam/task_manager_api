@@ -10,8 +10,12 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using TaskManager.Business;
+using TaskManager.Business.Implementations;
+using TaskManager.Business.Interfaces;
 using TaskManager.Repository;
 using TaskManager.Repository.Context;
+using TaskManager.Repository.Implementations;
+using TaskManager.Repository.Interfaces;
 
 namespace TaskManagerApi
 {
@@ -41,7 +45,10 @@ namespace TaskManagerApi
             });
 
             services.AddTransient<ITaskManagerBusiness, TaskManagerBusiness>();
+            services.AddTransient<IProjectBusiness, ProjectBusiness>();
+
             services.AddTransient<ITaskManagerRepository<TaskDetails>, TaskManagerRepository>();
+            services.AddTransient<IProjectRepository, ProjectRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

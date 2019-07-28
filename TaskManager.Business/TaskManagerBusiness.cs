@@ -7,15 +7,21 @@ using TaskManager.Core;
 using System.Collections.Generic;
 using TaskManager.Core.Exceptions;
 using System.Linq;
+using TaskManager.Repository.Interfaces;
+using TaskStatus = TaskManager.Repository.Context.TaskStatus;
 
 namespace TaskManager.Business
 {
     public class TaskManagerBusiness : ITaskManagerBusiness
     {
         private readonly ITaskManagerRepository<TaskDetails> _taskManagerRepository;
-        public TaskManagerBusiness(ITaskManagerRepository<TaskDetails> taskManagerRepository)
+        private readonly IProjectRepository _projectRepository;
+
+        public TaskManagerBusiness(ITaskManagerRepository<TaskDetails> taskManagerRepository,
+                                    IProjectRepository projectRepository)
         {
             _taskManagerRepository = taskManagerRepository;
+            _projectRepository = projectRepository;
         }
 
         public async Task<IEnumerable<TaskViewModel>> GetAllTasks()
@@ -80,13 +86,20 @@ namespace TaskManager.Business
                     Priority = taskDetails.Priority,
                     StartDate = taskDetails.StartDate,
                     EndDate = taskDetails.EndDate,
+                    Project = await GetProject(taskDetails),
+                    Status = (TaskStatus)taskDetails.Status
                 };
 
                 await _taskManagerRepository.Add(taskEntity);
             }
 
-           
-        }       
+
+        }
+
+        private async Task<Project> GetProject(TaskViewModel taskDetails)
+        {
+            return await _projectRepository.Get(taskDetails.ProjectId);
+        }
 
         public async Task UpdateTask(TaskViewModel taskDetails)
         {

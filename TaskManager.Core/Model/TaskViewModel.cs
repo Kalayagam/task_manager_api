@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace TaskManager.Core
@@ -20,6 +21,11 @@ namespace TaskManager.Core
         public DateTime EndDate { get; set; }
 
         public int Priority { get; set; }
+
+        public int ProjectId { get; set; }
+
+        [Range(0,1)]
+        public int Status { get; set; }
 
 
     }
