@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,17 +18,23 @@ namespace TaskManager.Repository
        
         public async Task<IEnumerable<TaskDetails>> GetAll()
         {
-            return await Task.FromResult(_taskDbContext.TaskDetails.ToList());
+            return await _taskDbContext.TaskDetails
+                .Include(task => task.Project)
+                .Include(task => task.ParentTask)
+                .ToListAsync();
         }       
 
         public async Task<TaskDetails> Get(int id)
         {
-            return await Task.FromResult(_taskDbContext.TaskDetails.FirstOrDefault(x => x.Id == id));
+            return await _taskDbContext.TaskDetails
+                .Include(task => task.Project)
+                .Include(task => task.ParentTask)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<ParentTask> GetParentTask(int id)
         {
-            return await Task.FromResult(_taskDbContext.ParentTasks.FirstOrDefault(x => x.Id == id));
+            return await _taskDbContext.ParentTasks.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task Add(TaskDetails taskDetails)
@@ -45,10 +52,12 @@ namespace TaskManager.Repository
         public async Task Update(TaskDetails taskDetailsToBeUpdated, TaskDetails taskDetails)
         {
             taskDetailsToBeUpdated.ParentTask = taskDetails.ParentTask;
+            taskDetailsToBeUpdated.Project = taskDetails.Project;
             taskDetailsToBeUpdated.Priority = taskDetails.Priority;
             taskDetailsToBeUpdated.StartDate = taskDetails.StartDate;
             taskDetailsToBeUpdated.TaskName = taskDetails.TaskName;
             taskDetailsToBeUpdated.EndDate = taskDetails.EndDate;
+            taskDetailsToBeUpdated.Status = taskDetails.Status;
 
             await _taskDbContext.SaveChangesAsync();
         }

@@ -9,6 +9,7 @@ using TaskManager.Core.Exceptions;
 using System.Linq;
 using TaskManager.Repository.Interfaces;
 using TaskStatus = TaskManager.Repository.Context.TaskStatus;
+using AutoMapper;
 
 namespace TaskManager.Business
 {
@@ -16,12 +17,15 @@ namespace TaskManager.Business
     {
         private readonly ITaskManagerRepository<TaskDetails> _taskManagerRepository;
         private readonly IProjectRepository _projectRepository;
+        private readonly IMapper _mapper;
 
         public TaskManagerBusiness(ITaskManagerRepository<TaskDetails> taskManagerRepository,
-                                    IProjectRepository projectRepository)
+                                    IProjectRepository projectRepository,
+                                    IMapper mapper)
         {
             _taskManagerRepository = taskManagerRepository;
             _projectRepository = projectRepository;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<TaskViewModel>> GetAllTasks()
@@ -30,19 +34,11 @@ namespace TaskManager.Business
             var tasks = new List<TaskViewModel>();
             foreach(var taskEntity in taskEntities)
             {
-                tasks.Add(new TaskViewModel()
-                {
-                    Id = taskEntity.Id,
-                    TaskName = taskEntity.TaskName,
-                    ParentId = GetParentTaskId(taskEntity),
-                    ParentTaskName = taskEntity.ParentTask?.TaskName,
-                    Priority = taskEntity.Priority,
-                    StartDate = taskEntity.StartDate,
-                    EndDate = taskEntity.EndDate
-                });
+                var taskViewModel = _mapper.Map<TaskViewModel>(taskEntity);
+                tasks.Add(taskViewModel);
             }
             
-            return await Task.FromResult(tasks);
+            return tasks;
         }
 
         public async Task<TaskViewModel> GetTask(int id)
@@ -51,49 +47,34 @@ namespace TaskManager.Business
 
             if (taskEntity == null)
             {
-                throw new TaskManagerException(ErrorCodes.TaskNotFoundResponse, "Task is empty");
+                throw new TaskManagerException(ErrorCodes.TaskNotFoundResponse, "Task not found");
             }
 
-            var taskViewModel = new TaskViewModel()
-            {
-                TaskName = taskEntity.TaskName,
-                ParentId = GetParentTaskId(taskEntity),
-                Priority = taskEntity.Priority,
-                StartDate = taskEntity.StartDate,
-                EndDate = taskEntity.EndDate,
-            };
+            var taskViewModel = _mapper.Map<TaskViewModel>(taskEntity);
 
             return taskViewModel;
         }       
 
-        public async Task AddTask(TaskViewModel taskDetails)
+        public async Task AddTask(TaskViewModel taskViewModel)
         {
-            if (taskDetails == null)
+            if (taskViewModel == null)
             {
                 throw new TaskManagerException(ErrorCodes.TaskBadRequestResponse, "Task is empty");
             }
 
-            if(taskDetails.IsParentTask)
+            if(taskViewModel.IsParentTask)
             {
-               await AddParentTask(taskDetails);
+               await AddParentTask(taskViewModel);
             }
             else
             {
-                var taskEntity = new TaskDetails()
-                {
-                    TaskName = taskDetails.TaskName,
-                    ParentTask = await GetParentTask(taskDetails),
-                    Priority = taskDetails.Priority,
-                    StartDate = taskDetails.StartDate,
-                    EndDate = taskDetails.EndDate,
-                    Project = await GetProject(taskDetails),
-                    Status = (TaskStatus)taskDetails.Status
-                };
+                var taskEntity = _mapper.Map<TaskDetails>(taskViewModel);
+
+                taskEntity.ParentTask = await GetParentTask(taskViewModel);
+                taskEntity.Project = await GetProject(taskViewModel);
 
                 await _taskManagerRepository.Add(taskEntity);
             }
-
-
         }
 
         private async Task<Project> GetProject(TaskViewModel taskDetails)
@@ -101,27 +82,24 @@ namespace TaskManager.Business
             return await _projectRepository.Get(taskDetails.ProjectId);
         }
 
-        public async Task UpdateTask(TaskViewModel taskDetails)
+        public async Task UpdateTask(TaskViewModel taskViewModel)
         {
-            if (taskDetails == null)
+            if (taskViewModel == null)
             {
                 throw new TaskManagerException(ErrorCodes.TaskNotFoundResponse, "Task is empty");
             }
 
-            var taskEntity = new TaskDetails()
-            {
-                TaskName = taskDetails.TaskName,
-                ParentTask = await GetParentTask(taskDetails),
-                Priority = taskDetails.Priority,
-                StartDate = taskDetails.StartDate,
-                EndDate = taskDetails.EndDate,
+            var taskEntity = _mapper.Map<TaskDetails>(taskViewModel);
+            taskEntity.ParentTask = await GetParentTask(taskViewModel);
+            taskEntity.Project = await GetProject(taskViewModel);
 
-            };
-            var taskToBeUpdated = await _taskManagerRepository.Get(taskDetails.Id);
-            if(taskToBeUpdated != null)
+            var taskToBeUpdated = await _taskManagerRepository.Get(taskViewModel.Id);
+            if (taskToBeUpdated == null)
             {
-                await _taskManagerRepository.Update(taskToBeUpdated, taskEntity);
-            }            
+                throw new TaskManagerException(ErrorCodes.TaskNotFoundResponse, "Task not found");
+            }
+
+            await _taskManagerRepository.Update(taskToBeUpdated, taskEntity);
         }
 
         public async Task DeleteTask(int id)
@@ -129,7 +107,7 @@ namespace TaskManager.Business
             var taskEntity = await _taskManagerRepository.Get(id);
             if (taskEntity == null)
             {
-                throw new TaskManagerException(ErrorCodes.TaskNotFoundResponse, "Task is empty");
+                throw new TaskManagerException(ErrorCodes.TaskNotFoundResponse, "Task not found");
             }
 
             await _taskManagerRepository.Delete(taskEntity);
@@ -143,11 +121,6 @@ namespace TaskManager.Business
             };
 
             await _taskManagerRepository.Add(taskEntity);
-        }
-
-        private static int GetParentTaskId(TaskDetails taskEntity)
-        {
-            return taskEntity.ParentTask?.Id ?? 0;
         }
 
         private async Task<ParentTask> GetParentTask(TaskViewModel taskDetails)
