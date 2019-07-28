@@ -20,62 +20,25 @@ namespace TaskManagerApi.Controllers
         {
             _projectBusiness = projectBusiness;
         }
-
-        // GET: api/Project
+        
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            try
-            {
-                var projeccts = await _projectBusiness.GetAll();
-                return Ok(projeccts);
-            }
-            catch (ProjectException ex)
-            {
-                return HandleException(ex);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode((int)HttpStatusCode.BadGateway, ex.Message);
-            }
+            var projeccts = await _projectBusiness.GetAll();
+            return Ok(projeccts);
         }
-
-        // GET: api/Project/5
+       
         [HttpGet("{id}", Name = "Get")]
         public async Task<IActionResult> Get(int id)
         {
-            try
-            {
-                var project = await _projectBusiness.Get(id);
-                return Ok(project);
-            }
-            catch (ProjectException ex)
-            {
-                return HandleException(ex);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode((int)HttpStatusCode.BadGateway, ex.Message);
-            }
+            var project = await _projectBusiness.Get(id);
+            return Ok(project);
         }
-
-        // POST: api/Project
+        
         [HttpPost]
         public async Task<IActionResult> Post(ProjectViewModel projectViewModel)
         {
-            try
-            {
-                await _projectBusiness.Add(projectViewModel);
-            }
-            catch (ProjectException ex)
-            {
-                return HandleException(ex);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode((int)HttpStatusCode.BadGateway, ex.Message);
-            }
-
+            await _projectBusiness.Add(projectViewModel);
 
             return StatusCode((int)HttpStatusCode.Created);
         }
@@ -83,55 +46,16 @@ namespace TaskManagerApi.Controllers
         [HttpPut("")]
         public async Task<IActionResult> Put(ProjectViewModel projectViewModel)
         {
-            try
-            {
-                await _projectBusiness.Update(projectViewModel);
-                return NoContent();
-            }
-            catch (ProjectException ex)
-            {
-                return HandleException(ex);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode((int)HttpStatusCode.BadGateway, ex.Message);
-            }
+            await _projectBusiness.Update(projectViewModel);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            try
-            {
-                await _projectBusiness.Delete(id);
-            }
-            catch (ProjectException ex)
-            {
-                return HandleException(ex);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode((int)HttpStatusCode.BadGateway, ex.Message);
-            }
+            await _projectBusiness.Delete(id);
 
             return NoContent();
-        }
-
-
-        private IActionResult HandleException(ProjectException ex)
-        {
-            switch (ex.ErrorNumber)
-            {
-                case ErrorCodes.ProjectNotFoundResponse:
-                    return NotFound(ex.Message);
-                case ErrorCodes.ProjectBadRequestResponse:
-                    return BadRequest(ex.Message);
-                case ErrorCodes.ProjectInternalServerResponse:
-                    return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
-                default:
-                    return StatusCode((int)HttpStatusCode.BadGateway, ex.Message);
-
-            }
         }
     }
 }

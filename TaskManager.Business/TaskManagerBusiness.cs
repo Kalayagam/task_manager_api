@@ -51,7 +51,7 @@ namespace TaskManager.Business
 
             if (taskEntity == null)
             {
-                throw new TaskDetailsException(ErrorCodes.TaskNotFoundResponse, "Task is empty");
+                throw new TaskManagerException(ErrorCodes.TaskNotFoundResponse, "Task is empty");
             }
 
             var taskViewModel = new TaskViewModel()
@@ -70,7 +70,7 @@ namespace TaskManager.Business
         {
             if (taskDetails == null)
             {
-                throw new TaskDetailsException(ErrorCodes.TaskBadRequestResponse, "Task is empty");
+                throw new TaskManagerException(ErrorCodes.TaskBadRequestResponse, "Task is empty");
             }
 
             if(taskDetails.IsParentTask)
@@ -105,7 +105,7 @@ namespace TaskManager.Business
         {
             if (taskDetails == null)
             {
-                throw new TaskDetailsException(ErrorCodes.TaskNotFoundResponse, "Task is empty");
+                throw new TaskManagerException(ErrorCodes.TaskNotFoundResponse, "Task is empty");
             }
 
             var taskEntity = new TaskDetails()
@@ -129,7 +129,7 @@ namespace TaskManager.Business
             var taskEntity = await _taskManagerRepository.Get(id);
             if (taskEntity == null)
             {
-                throw new TaskDetailsException(ErrorCodes.TaskNotFoundResponse, "Task is empty");
+                throw new TaskManagerException(ErrorCodes.TaskNotFoundResponse, "Task is empty");
             }
 
             await _taskManagerRepository.Delete(taskEntity);

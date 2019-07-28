@@ -18,6 +18,7 @@ using TaskManager.Repository;
 using TaskManager.Repository.Context;
 using TaskManager.Repository.Implementations;
 using TaskManager.Repository.Interfaces;
+using TaskManagerApi.Middlewares;
 
 namespace TaskManagerApi
 {
@@ -75,7 +76,7 @@ namespace TaskManagerApi
                   });
             }
             app.UseCors("AllowOrigin");
-
+            app.UseMiddleware<ExceptionMiddleware>();
             app.UseMvc();
         }
     }

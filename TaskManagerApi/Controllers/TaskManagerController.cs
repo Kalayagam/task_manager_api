@@ -24,117 +24,37 @@ namespace TaskManagerApi.Controllers
         [HttpGet("")]
         public async Task<IActionResult> GetAllTasks()
         {
-            try
-            {
-                var tasks = await _taskManagerBusiness.GetAllTasks();
-                return Ok(tasks);                 
-            }
-            catch(TaskDetailsException ex)
-            {
-                return HandleException(ex);
-            }
-            catch(Exception ex)
-            {
-                return StatusCode((int)HttpStatusCode.BadGateway, ex.Message);
-            }
-           
+            var tasks = await _taskManagerBusiness.GetAllTasks();
+            return Ok(tasks);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            try
-            {
-                var task = await _taskManagerBusiness.GetTask(id);
-                return Ok(task);
-            }
-            catch (TaskDetailsException ex)
-            {
-                return HandleException(ex);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode((int)HttpStatusCode.BadGateway, ex.Message);
-            }
+            var task = await _taskManagerBusiness.GetTask(id);
+            return Ok(task);
         }
 
         [HttpPost("")]
         public async Task<IActionResult> AddTask(TaskViewModel taskViewModel)
-        {           
-
-            try
-            {               
-                await _taskManagerBusiness.AddTask(taskViewModel);
-            }
-            catch (TaskDetailsException ex)
-            {
-                return HandleException(ex);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode((int)HttpStatusCode.BadGateway, ex.Message);
-            }
-
-           
+        {
+            await _taskManagerBusiness.AddTask(taskViewModel);
             return StatusCode((int)HttpStatusCode.Created);
         }
 
         [HttpPut("")]
         public async Task<IActionResult> UpdateTask(TaskViewModel taskViewModel)
         {
-            try
-            {
-                await _taskManagerBusiness.UpdateTask(taskViewModel);
-                return NoContent();
-            }
-            catch (TaskDetailsException ex)
-            {
-                return HandleException(ex);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode((int)HttpStatusCode.BadGateway, ex.Message);
-            }
-
-
+            await _taskManagerBusiness.UpdateTask(taskViewModel);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
 
         public async Task<IActionResult> DeleteTask(int id)
         {
-            try
-            {
-                await _taskManagerBusiness.DeleteTask(id);
-            }
-            catch (TaskDetailsException ex)
-            {
-                return HandleException(ex);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode((int)HttpStatusCode.BadGateway, ex.Message);
-            }
-
+            await _taskManagerBusiness.DeleteTask(id);
             return NoContent();
         }
-
-
-        private IActionResult HandleException(TaskDetailsException ex)
-        {
-            switch (ex.ErrorNumber)
-            {
-                case ErrorCodes.TaskNotFoundResponse:
-                    return NotFound(ex.Message);
-                case ErrorCodes.TaskBadRequestResponse:
-                    return BadRequest(ex.Message);
-                case ErrorCodes.TaskInternalServerResponse:
-                    return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
-                default:
-                    return StatusCode((int)HttpStatusCode.BadGateway, ex.Message);
-
-            }
-        }
-
     }
 }

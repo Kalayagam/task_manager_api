@@ -4,29 +4,15 @@ using System.Text;
 
 namespace TaskManager.Core.Exceptions
 {
-    public class TaskDetailsException : Exception
+    public class TaskManagerException : Exception
     {
         public int ErrorNumber { get; set; }
-        public TaskDetailsException()
+        public TaskManagerException()
         {
 
         }
 
-        public TaskDetailsException(int errorNumber, string message) : base(message)
-        {
-            ErrorNumber = errorNumber;
-        }
-    }
-
-    public class ProjectException : Exception
-    {
-        public int ErrorNumber { get; set; }
-        public ProjectException()
-        {
-
-        }
-
-        public ProjectException(int errorNumber, string message) : base(message)
+        public TaskManagerException(int errorNumber, string message) : base(message)
         {
             ErrorNumber = errorNumber;
         }

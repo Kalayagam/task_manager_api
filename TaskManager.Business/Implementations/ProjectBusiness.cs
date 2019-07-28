@@ -28,7 +28,7 @@ namespace TaskManager.Business.Implementations
         {
             if (model == null)
             {
-                throw new ProjectException(ErrorCodes.ProjectNotFoundResponse, "Project is empty");
+                throw new TaskManagerException(ErrorCodes.ProjectNotFoundResponse, "Project is empty");
             }
 
             var projectEntity = _mapper.Map<Project>(model);
@@ -40,7 +40,7 @@ namespace TaskManager.Business.Implementations
             var projectEntity = await _projectRepository.Get(id);
             if (projectEntity == null)
             {
-                throw new TaskDetailsException(ErrorCodes.ProjectNotFoundResponse, "Project is empty");
+                throw new TaskManagerException(ErrorCodes.ProjectNotFoundResponse, "Project not found");
             }
 
             await _projectRepository.Delete(projectEntity);
@@ -52,7 +52,7 @@ namespace TaskManager.Business.Implementations
 
             if (projectEntity == null)
             {
-                throw new ProjectException(ErrorCodes.ProjectNotFoundResponse, "Project is empty");
+                throw new TaskManagerException(ErrorCodes.ProjectNotFoundResponse, "Project not found");
             }
 
             var projectViewModel = _mapper.Map<ProjectViewModel>(projectEntity);
@@ -77,7 +77,7 @@ namespace TaskManager.Business.Implementations
         {
             if (model == null)
             {
-                throw new ProjectException(ErrorCodes.ProjectNotFoundResponse, "Project is empty");
+                throw new TaskManagerException(ErrorCodes.ProjectNotFoundResponse, "Project is empty");
             }
 
             var projectEntity = _mapper.Map<Project>(model);
