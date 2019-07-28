@@ -17,5 +17,7 @@ namespace TaskManager.Repository.Context
         public int Priority { get; set; }
 
         public List<TaskDetails> Tasks { get; set; }
+
+        public User User{ get; set; }
     }
 }

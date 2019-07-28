@@ -14,12 +14,15 @@ namespace TaskManager.Business.Implementations
     public class ProjectBusiness : IBusiness<ProjectViewModel>
     {
         private readonly IRepository<Project> _projectRepository;
+        private readonly IRepository<User> _userRepository;
         private readonly IMapper _mapper;
 
         public ProjectBusiness(IRepository<Project> projectRepository,
+                                IRepository<User> userRepository,
                                 IMapper mapper)
         {
             _projectRepository = projectRepository;
+            _userRepository = userRepository;
             _mapper = mapper;
         }
 
@@ -27,6 +30,7 @@ namespace TaskManager.Business.Implementations
         public async Task Add(ProjectViewModel model)
         {
             var projectEntity = _mapper.Map<Project>(model);
+            projectEntity.User = await GetUser(model);
             await _projectRepository.Add(projectEntity);
         }
 
@@ -59,13 +63,12 @@ namespace TaskManager.Business.Implementations
 
         public async Task Update(ProjectViewModel model)
         {
-            var projectEntity = _mapper.Map<Project>(model);
             var projectToBeUpdated = await GetProject(model.Id);
-            if (projectToBeUpdated != null)
-            {
-                await _projectRepository.Update(projectToBeUpdated, projectEntity);
-            }
-        }
+            var projectEntity = _mapper.Map<Project>(model);
+            projectEntity.User = await GetUser(model);
+
+            await _projectRepository.Update(projectToBeUpdated, projectEntity);
+        }       
 
         private async Task<Project> GetProject(int id)
         {
@@ -76,6 +79,11 @@ namespace TaskManager.Business.Implementations
             }
 
             return projectEntity;
+        }
+
+        private async Task<User> GetUser(ProjectViewModel model)
+        {
+            return await _userRepository.Get(model.UserId);
         }
     }
 }

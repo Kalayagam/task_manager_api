@@ -31,16 +31,23 @@ namespace TaskManager.Repository.Implementations
 
         public async Task<Project> Get(int id)
         {           
-            return await _taskDbContext.Projects.FirstOrDefaultAsync(x => x.Id == id);
+            return await _taskDbContext.Projects
+                .Include(project => project.User)
+                .Include(project => project.Tasks)
+                .FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<IEnumerable<Project>> GetAll()
         {            
-            return await _taskDbContext.Projects.Include(project => project.Tasks).ToListAsync();
+            return await _taskDbContext.Projects
+                .Include(project => project.User)
+                .Include(project => project.Tasks)
+                .ToListAsync();
         }        
 
         public async Task Update(Project entityToBeUpdated, Project entity)
         {
+            entityToBeUpdated.User = entity.User;
             entityToBeUpdated.ProjectName = entity.ProjectName;
             entityToBeUpdated.StartDate = entity.StartDate;
             entityToBeUpdated.EndDate = entity.EndDate;

@@ -21,6 +21,8 @@ namespace TaskManager.Repository.Context
         public TaskStatus Status { get; set; }
 
         public Project Project { get; set; }
+
+        public User User { get; set; }
     }
 
     public enum TaskStatus

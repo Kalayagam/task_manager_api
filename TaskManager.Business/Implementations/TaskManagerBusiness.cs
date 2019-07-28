@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TaskManager.Business.Interfaces;
@@ -13,14 +14,17 @@ namespace TaskManager.Business.Implementations
     {
         private readonly ITaskManagerRepository<TaskDetails> _taskManagerRepository;
         private readonly IRepository<Project> _projectRepository;
+        private readonly IRepository<User> _userRepository;
         private readonly IMapper _mapper;
 
         public TaskManagerBusiness(ITaskManagerRepository<TaskDetails> taskManagerRepository,
                                     IRepository<Project> projectRepository,
+                                    IRepository<User> userRepository,
                                     IMapper mapper)
         {
             _taskManagerRepository = taskManagerRepository;
             _projectRepository = projectRepository;
+            _userRepository = userRepository;
             _mapper = mapper;
         }
 
@@ -57,6 +61,7 @@ namespace TaskManager.Business.Implementations
 
                 taskEntity.ParentTask = await GetParentTask(taskViewModel);
                 taskEntity.Project = await GetProject(taskViewModel);
+                taskEntity.User = await GetUser(taskViewModel);
 
                 await _taskManagerRepository.Add(taskEntity);
             }
@@ -67,11 +72,12 @@ namespace TaskManager.Business.Implementations
             var taskToBeUpdated = await GetTaskDetails(taskViewModel.Id);
             var taskEntity = _mapper.Map<TaskDetails>(taskViewModel);
             taskEntity.ParentTask = await GetParentTask(taskViewModel);
-            taskEntity.Project = await GetProject(taskViewModel);            
+            taskEntity.Project = await GetProject(taskViewModel);  
+            taskEntity.User = await GetUser(taskViewModel);
 
             await _taskManagerRepository.Update(taskToBeUpdated, taskEntity);
         }
-
+       
         public async Task Delete(int id)
         {
             var taskEntity = await GetTaskDetails(id);
@@ -94,6 +100,12 @@ namespace TaskManager.Business.Implementations
         {
             return await _projectRepository.Get(taskDetails.ProjectId);
         }
+
+        private async Task<User> GetUser(TaskViewModel taskViewModel)
+        {
+            return await _userRepository.Get(taskViewModel.UserId);
+        }
+
 
         private async Task AddParentTask(TaskViewModel taskDetails)
         {

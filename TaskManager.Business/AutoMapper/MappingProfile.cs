@@ -26,7 +26,8 @@ namespace TaskManager.Business.AutoMapper
                 .ForMember(dest => dest.TotalNumberOfTasks, opt => opt.MapFrom(src => src.Tasks.Count()))
                 .ForMember(dest => dest.NumberOfTasksCompleted, opt => opt.MapFrom(src => src.Tasks.Count(x => x.Status == TaskStatus.Complete)));
 
-            CreateMap<ProjectViewModel, Project>();
+            CreateMap<ProjectViewModel, Project>()
+                .ForMember(dest => dest.User, opt => opt.Ignore());
         }
 
         private void ConfigureTask()
@@ -37,7 +38,8 @@ namespace TaskManager.Business.AutoMapper
 
             CreateMap<TaskViewModel, TaskDetails>()
                 .ForMember(dest => dest.ParentTask, opt => opt.Ignore())
-                .ForMember(dest => dest.Project, opt => opt.Ignore());
+                .ForMember(dest => dest.Project, opt => opt.Ignore())
+                .ForMember(dest => dest.User, opt => opt.Ignore());
         }
 
         private void ConfigureUser()

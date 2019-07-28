@@ -30,18 +30,12 @@ namespace TaskManager.Repository.Implementations
 
         public async Task<User> Get(int id)
         {
-            return await _taskDbContext.Users
-                .Include(user => user.Task)
-                .Include(user => user.Project)
-                .FirstOrDefaultAsync(x => x.Id == id);
+            return await _taskDbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<IEnumerable<User>> GetAll()
         {
-            return await _taskDbContext.Users
-                .Include(user => user.Task)
-                .Include(user => user.Project)
-                .ToListAsync();
+            return await _taskDbContext.Users.ToListAsync();
         }
 
         public async Task Update(User entityToBeUpdated, User entity)

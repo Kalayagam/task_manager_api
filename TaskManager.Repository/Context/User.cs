@@ -12,10 +12,6 @@ namespace TaskManager.Repository.Context
 
         public string LastName { get; set; }
 
-        public int EmployeeId { get; set; }
-
-        public Project Project { get; set; }
-
-        public TaskDetails Task { get; set; }
+        public int EmployeeId { get; set; }        
     }
 }

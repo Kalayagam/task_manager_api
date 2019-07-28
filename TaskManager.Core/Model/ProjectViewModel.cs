@@ -16,6 +16,8 @@ namespace TaskManager.Core.Model
 
         public int Priority { get; set; }
 
+        public int UserId { get; set; }
+
         public int TotalNumberOfTasks { get; set; }
 
         public int NumberOfTasksCompleted { get; set; }

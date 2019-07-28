@@ -19,6 +19,7 @@ namespace TaskManager.Repository.Implementations
             return await _taskDbContext.TaskDetails
                 .Include(task => task.Project)
                 .Include(task => task.ParentTask)
+                .Include(task => task.User)
                 .ToListAsync();
         }       
 
@@ -27,6 +28,7 @@ namespace TaskManager.Repository.Implementations
             return await _taskDbContext.TaskDetails
                 .Include(task => task.Project)
                 .Include(task => task.ParentTask)
+                .Include(task => task.User)
                 .FirstOrDefaultAsync(x => x.Id == id);
         }
 
@@ -51,6 +53,7 @@ namespace TaskManager.Repository.Implementations
         {
             taskDetailsToBeUpdated.ParentTask = taskDetails.ParentTask;
             taskDetailsToBeUpdated.Project = taskDetails.Project;
+            taskDetailsToBeUpdated.User = taskDetails.User;
             taskDetailsToBeUpdated.Priority = taskDetails.Priority;
             taskDetailsToBeUpdated.StartDate = taskDetails.StartDate;
             taskDetailsToBeUpdated.TaskName = taskDetails.TaskName;
