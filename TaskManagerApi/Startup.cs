@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -10,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using TaskManager.Business;
+using TaskManager.Business.AutoMapper;
 using TaskManager.Business.Implementations;
 using TaskManager.Business.Interfaces;
 using TaskManager.Repository;
@@ -43,6 +45,14 @@ namespace TaskManagerApi
             {
                 c.SwaggerDoc("v1", new Info { Title = "Task Manager API", Version = "v1" });
             });
+
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
 
             services.AddTransient<ITaskManagerBusiness, TaskManagerBusiness>();
             services.AddTransient<IProjectBusiness, ProjectBusiness>();
