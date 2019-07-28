@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Threading.Tasks;
 using TaskManager.Business.Interfaces;
@@ -31,14 +32,14 @@ namespace TaskManagerApi.Controllers
         }
 
         [HttpPost("")]
-        public async Task<IActionResult> AddTask(TaskViewModel taskViewModel)
+        public async Task<IActionResult> AddTask([Required]TaskViewModel taskViewModel)
         {
             await _taskManagerBusiness.Add(taskViewModel);
             return StatusCode((int)HttpStatusCode.Created);
         }
 
         [HttpPut("")]
-        public async Task<IActionResult> UpdateTask(TaskViewModel taskViewModel)
+        public async Task<IActionResult> UpdateTask([Required]TaskViewModel taskViewModel)
         {
             await _taskManagerBusiness.Update(taskViewModel);
             return NoContent();

@@ -35,7 +35,7 @@ namespace TaskManagerApi.Middlewares
             var response = context.Response;
             var taskManagerException = exception as TaskManagerException;
             var statusCode = (int)HttpStatusCode.InternalServerError;
-            var message = "Unexpected error";
+            var message = exception.Message;
             var ErrorNumber = 0;
 
             if (taskManagerException != null)

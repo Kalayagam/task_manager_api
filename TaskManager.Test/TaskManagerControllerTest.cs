@@ -6,17 +6,18 @@ using System.Collections.Generic;
 using TaskManager.Core;
 using TaskManagerApi.Controllers;
 using Microsoft.AspNetCore.Mvc;
+using TaskManager.Business.Interfaces;
 
 namespace TaskManager.Test
 {
     public class TaskManagerControllerTest
     {
-        private readonly Mock<ITaskManagerBusiness> _mockTaskManager;
+        private readonly Mock<IBusiness<TaskViewModel>> _mockTaskManager;
         private readonly TaskManagerController _sut;
 
         public TaskManagerControllerTest()
         {
-            _mockTaskManager = new Mock<ITaskManagerBusiness>();
+            _mockTaskManager = new Mock<IBusiness<TaskViewModel>>();
             _sut = new TaskManagerController(_mockTaskManager.Object);
         }
 
@@ -37,7 +38,7 @@ namespace TaskManager.Test
                 }
             };
 
-            _mockTaskManager.Setup(x => x.GetAllTasks()).ReturnsAsync(mockTaskViewModel);
+            _mockTaskManager.Setup(x => x.GetAll()).ReturnsAsync(mockTaskViewModel);
 
             //Action
             var response = await _sut.GetAllTasks();
@@ -55,7 +56,7 @@ namespace TaskManager.Test
             {
                 Id = 1
             };
-            _mockTaskManager.Setup(x => x.GetTask(It.IsAny<int>())).ReturnsAsync(mockTaskViewModel);
+            _mockTaskManager.Setup(x => x.Get(It.IsAny<int>())).ReturnsAsync(mockTaskViewModel);
             //Action
             var response = await _sut.Get(mockTaskViewModel.Id);
 

@@ -57,13 +57,15 @@ namespace TaskManagerApi.Extensions
         private static void AddRepositoryLayerDependencies(IServiceCollection services)
         {
             services.AddTransient<ITaskManagerRepository<TaskDetails>, TaskManagerRepository>();
-            services.AddTransient<IRepository<Project>, ProjectRepository>();
+            services.AddTransient<IRepository<Project>, ProjectRepository>(); 
+            services.AddTransient<IRepository<User>, UserRepository>();
         }
 
         private static void AddBusinessLayerDependencies(IServiceCollection services)
         {
             services.AddTransient<IBusiness<TaskViewModel>, TaskManagerBusiness>();
             services.AddTransient<IBusiness<ProjectViewModel>, ProjectBusiness>();
+            services.AddTransient<IBusiness<UserViewModel>, UserBusiness>();
         }
     }
 }

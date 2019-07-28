@@ -39,25 +39,14 @@ namespace TaskManager.Business.Implementations
 
         public async Task<TaskViewModel> Get(int id)
         {
-            var taskEntity = await _taskManagerRepository.Get(id);
-
-            if (taskEntity == null)
-            {
-                throw new TaskManagerException(ErrorCodes.TaskNotFoundResponse, "Task not found");
-            }
-
+            var taskEntity = await GetTaskDetails(id);
             var taskViewModel = _mapper.Map<TaskViewModel>(taskEntity);
 
             return taskViewModel;
-        }       
+        }
 
         public async Task Add(TaskViewModel taskViewModel)
-        {
-            if (taskViewModel == null)
-            {
-                throw new TaskManagerException(ErrorCodes.TaskBadRequestResponse, "Task is empty");
-            }
-
+        { 
             if(taskViewModel.IsParentTask)
             {
                await AddParentTask(taskViewModel);
@@ -75,33 +64,30 @@ namespace TaskManager.Business.Implementations
 
         public async Task Update(TaskViewModel taskViewModel)
         {
-            if (taskViewModel == null)
-            {
-                throw new TaskManagerException(ErrorCodes.TaskNotFoundResponse, "Task is empty");
-            }
-
+            var taskToBeUpdated = await GetTaskDetails(taskViewModel.Id);
             var taskEntity = _mapper.Map<TaskDetails>(taskViewModel);
             taskEntity.ParentTask = await GetParentTask(taskViewModel);
-            taskEntity.Project = await GetProject(taskViewModel);
-
-            var taskToBeUpdated = await _taskManagerRepository.Get(taskViewModel.Id);
-            if (taskToBeUpdated == null)
-            {
-                throw new TaskManagerException(ErrorCodes.TaskNotFoundResponse, "Task not found");
-            }
+            taskEntity.Project = await GetProject(taskViewModel);            
 
             await _taskManagerRepository.Update(taskToBeUpdated, taskEntity);
         }
 
         public async Task Delete(int id)
         {
+            var taskEntity = await GetTaskDetails(id);
+            await _taskManagerRepository.Delete(taskEntity);
+        }
+
+        private async Task<TaskDetails> GetTaskDetails(int id)
+        {
             var taskEntity = await _taskManagerRepository.Get(id);
+
             if (taskEntity == null)
             {
                 throw new TaskManagerException(ErrorCodes.TaskNotFoundResponse, "Task not found");
             }
 
-            await _taskManagerRepository.Delete(taskEntity);
+            return taskEntity;
         }
 
         private async Task<Project> GetProject(TaskViewModel taskDetails)

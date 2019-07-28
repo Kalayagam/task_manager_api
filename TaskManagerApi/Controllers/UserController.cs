@@ -7,55 +7,52 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Business.Interfaces;
-using TaskManager.Core.Exceptions;
 using TaskManager.Core.Model;
 
 namespace TaskManagerApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProjectController : ControllerBase
+    public class UserController : ControllerBase
     {
-        private readonly IBusiness<ProjectViewModel> _projectBusiness;
-        public ProjectController(IBusiness<ProjectViewModel> projectBusiness)
+        private readonly IBusiness<UserViewModel> _userBusiness;
+        public UserController(IBusiness<UserViewModel> userBusiness)
         {
-            _projectBusiness = projectBusiness;
+            _userBusiness = userBusiness;
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var projeccts = await _projectBusiness.GetAll();
-            return Ok(projeccts);
+            var users = await _userBusiness.GetAll();
+            return Ok(users);
         }
-       
+
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var project = await _projectBusiness.Get(id);
-            return Ok(project);
+            var user = await _userBusiness.Get(id);
+            return Ok(user);
         }
-        
-        [HttpPost]
-        public async Task<IActionResult> Post([Required]ProjectViewModel projectViewModel)
-        {
-            await _projectBusiness.Add(projectViewModel);
 
+        [HttpPost]
+        public async Task<IActionResult> Post([Required]UserViewModel userViewModel)
+        {
+            await _userBusiness.Add(userViewModel);
             return StatusCode((int)HttpStatusCode.Created);
         }
-        
+
         [HttpPut("")]
-        public async Task<IActionResult> Put([Required]ProjectViewModel projectViewModel)
+        public async Task<IActionResult> Put([Required]UserViewModel userViewModel)
         {
-            await _projectBusiness.Update(projectViewModel);
+            await _userBusiness.Update(userViewModel);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            await _projectBusiness.Delete(id);
-
+            await _userBusiness.Delete(id);
             return NoContent();
         }
     }

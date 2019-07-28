@@ -17,6 +17,7 @@ namespace TaskManager.Business.AutoMapper
         {
             ConfigureTask();
             ConfigureProject();
+            ConfigureUser();
         }
 
         private void ConfigureProject()
@@ -37,6 +38,12 @@ namespace TaskManager.Business.AutoMapper
             CreateMap<TaskViewModel, TaskDetails>()
                 .ForMember(dest => dest.ParentTask, opt => opt.Ignore())
                 .ForMember(dest => dest.Project, opt => opt.Ignore());
+        }
+
+        private void ConfigureUser()
+        {
+            CreateMap<User, UserViewModel>();
+            CreateMap<UserViewModel, User>();
         }
     }
 }

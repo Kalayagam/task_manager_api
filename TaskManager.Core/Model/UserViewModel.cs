@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TaskManager.Repository.Context
+namespace TaskManager.Core.Model
 {
-    public class User
+    public class UserViewModel
     {
         public int Id { get; set; }
 
@@ -13,9 +13,5 @@ namespace TaskManager.Repository.Context
         public string LastName { get; set; }
 
         public int EmployeeId { get; set; }
-
-        public Project Project { get; set; }
-
-        public TaskDetails Task { get; set; }
     }
 }

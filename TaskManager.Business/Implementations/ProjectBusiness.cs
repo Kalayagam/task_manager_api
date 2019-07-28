@@ -26,35 +26,19 @@ namespace TaskManager.Business.Implementations
 
         public async Task Add(ProjectViewModel model)
         {
-            if (model == null)
-            {
-                throw new TaskManagerException(ErrorCodes.ProjectNotFoundResponse, "Project is empty");
-            }
-
             var projectEntity = _mapper.Map<Project>(model);
             await _projectRepository.Add(projectEntity);
         }
 
         public async Task Delete(int id)
         {
-            var projectEntity = await _projectRepository.Get(id);
-            if (projectEntity == null)
-            {
-                throw new TaskManagerException(ErrorCodes.ProjectNotFoundResponse, "Project not found");
-            }
-
+            var projectEntity = await GetProject(id);
             await _projectRepository.Delete(projectEntity);
         }
 
         public async Task<ProjectViewModel> Get(int id)
         {
-            var projectEntity = await _projectRepository.Get(id);
-
-            if (projectEntity == null)
-            {
-                throw new TaskManagerException(ErrorCodes.ProjectNotFoundResponse, "Project not found");
-            }
-
+            var projectEntity = await GetProject(id);
             var projectViewModel = _mapper.Map<ProjectViewModel>(projectEntity);
 
             return projectViewModel;
@@ -75,17 +59,23 @@ namespace TaskManager.Business.Implementations
 
         public async Task Update(ProjectViewModel model)
         {
-            if (model == null)
-            {
-                throw new TaskManagerException(ErrorCodes.ProjectNotFoundResponse, "Project is empty");
-            }
-
             var projectEntity = _mapper.Map<Project>(model);
-            var projectToBeUpdated = await _projectRepository.Get(model.Id);
+            var projectToBeUpdated = await GetProject(model.Id);
             if (projectToBeUpdated != null)
             {
                 await _projectRepository.Update(projectToBeUpdated, projectEntity);
             }
+        }
+
+        private async Task<Project> GetProject(int id)
+        {
+            var projectEntity = await _projectRepository.Get(id);
+            if (projectEntity == null)
+            {
+                throw new TaskManagerException(ErrorCodes.ProjectNotFoundResponse, "Project not found");
+            }
+
+            return projectEntity;
         }
     }
 }
