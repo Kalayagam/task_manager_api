@@ -11,12 +11,12 @@ using TaskManager.Repository.Interfaces;
 
 namespace TaskManager.Business.Implementations
 {
-    public class ProjectBusiness : IProjectBusiness
+    public class ProjectBusiness : IBusiness<ProjectViewModel>
     {
-        private readonly IProjectRepository _projectRepository;
+        private readonly IRepository<Project> _projectRepository;
         private readonly IMapper _mapper;
 
-        public ProjectBusiness(IProjectRepository projectRepository,
+        public ProjectBusiness(IRepository<Project> projectRepository,
                                 IMapper mapper)
         {
             _projectRepository = projectRepository;

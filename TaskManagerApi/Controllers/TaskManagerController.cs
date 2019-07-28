@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using TaskManager.Business;
+using TaskManager.Business.Interfaces;
 using TaskManager.Core;
-using TaskManager.Core.Exceptions;
 
 namespace TaskManagerApi.Controllers
 {
@@ -15,8 +10,8 @@ namespace TaskManagerApi.Controllers
     [ApiController]
     public class TaskManagerController : ControllerBase
     {
-        private readonly ITaskManagerBusiness _taskManagerBusiness;
-        public TaskManagerController(ITaskManagerBusiness taskManagerBusiness)
+        private readonly IBusiness<TaskViewModel> _taskManagerBusiness;
+        public TaskManagerController(IBusiness<TaskViewModel> taskManagerBusiness)
         {
             _taskManagerBusiness = taskManagerBusiness;
         }
@@ -24,28 +19,28 @@ namespace TaskManagerApi.Controllers
         [HttpGet("")]
         public async Task<IActionResult> GetAllTasks()
         {
-            var tasks = await _taskManagerBusiness.GetAllTasks();
+            var tasks = await _taskManagerBusiness.GetAll();
             return Ok(tasks);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var task = await _taskManagerBusiness.GetTask(id);
+            var task = await _taskManagerBusiness.Get(id);
             return Ok(task);
         }
 
         [HttpPost("")]
         public async Task<IActionResult> AddTask(TaskViewModel taskViewModel)
         {
-            await _taskManagerBusiness.AddTask(taskViewModel);
+            await _taskManagerBusiness.Add(taskViewModel);
             return StatusCode((int)HttpStatusCode.Created);
         }
 
         [HttpPut("")]
         public async Task<IActionResult> UpdateTask(TaskViewModel taskViewModel)
         {
-            await _taskManagerBusiness.UpdateTask(taskViewModel);
+            await _taskManagerBusiness.Update(taskViewModel);
             return NoContent();
         }
 
@@ -53,7 +48,7 @@ namespace TaskManagerApi.Controllers
 
         public async Task<IActionResult> DeleteTask(int id)
         {
-            await _taskManagerBusiness.DeleteTask(id);
+            await _taskManagerBusiness.Delete(id);
             return NoContent();
         }
     }

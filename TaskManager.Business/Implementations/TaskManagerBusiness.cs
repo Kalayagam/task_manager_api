@@ -1,26 +1,22 @@
-﻿using System;
-using System.Collections;
-using System.Threading.Tasks;
-using TaskManager.Repository;
-using TaskManager.Repository.Context;
-using TaskManager.Core;
+﻿using AutoMapper;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using TaskManager.Business.Interfaces;
+using TaskManager.Core;
 using TaskManager.Core.Exceptions;
-using System.Linq;
+using TaskManager.Repository.Context;
 using TaskManager.Repository.Interfaces;
-using TaskStatus = TaskManager.Repository.Context.TaskStatus;
-using AutoMapper;
 
-namespace TaskManager.Business
+namespace TaskManager.Business.Implementations
 {
-    public class TaskManagerBusiness : ITaskManagerBusiness
+    public class TaskManagerBusiness : IBusiness<TaskViewModel>
     {
         private readonly ITaskManagerRepository<TaskDetails> _taskManagerRepository;
-        private readonly IProjectRepository _projectRepository;
+        private readonly IRepository<Project> _projectRepository;
         private readonly IMapper _mapper;
 
         public TaskManagerBusiness(ITaskManagerRepository<TaskDetails> taskManagerRepository,
-                                    IProjectRepository projectRepository,
+                                    IRepository<Project> projectRepository,
                                     IMapper mapper)
         {
             _taskManagerRepository = taskManagerRepository;
@@ -28,7 +24,7 @@ namespace TaskManager.Business
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<TaskViewModel>> GetAllTasks()
+        public async Task<IEnumerable<TaskViewModel>> GetAll()
         {
             var taskEntities = await _taskManagerRepository.GetAll();
             var tasks = new List<TaskViewModel>();
@@ -41,7 +37,7 @@ namespace TaskManager.Business
             return tasks;
         }
 
-        public async Task<TaskViewModel> GetTask(int id)
+        public async Task<TaskViewModel> Get(int id)
         {
             var taskEntity = await _taskManagerRepository.Get(id);
 
@@ -55,7 +51,7 @@ namespace TaskManager.Business
             return taskViewModel;
         }       
 
-        public async Task AddTask(TaskViewModel taskViewModel)
+        public async Task Add(TaskViewModel taskViewModel)
         {
             if (taskViewModel == null)
             {
@@ -77,12 +73,7 @@ namespace TaskManager.Business
             }
         }
 
-        private async Task<Project> GetProject(TaskViewModel taskDetails)
-        {
-            return await _projectRepository.Get(taskDetails.ProjectId);
-        }
-
-        public async Task UpdateTask(TaskViewModel taskViewModel)
+        public async Task Update(TaskViewModel taskViewModel)
         {
             if (taskViewModel == null)
             {
@@ -102,7 +93,7 @@ namespace TaskManager.Business
             await _taskManagerRepository.Update(taskToBeUpdated, taskEntity);
         }
 
-        public async Task DeleteTask(int id)
+        public async Task Delete(int id)
         {
             var taskEntity = await _taskManagerRepository.Get(id);
             if (taskEntity == null)
@@ -111,6 +102,11 @@ namespace TaskManager.Business
             }
 
             await _taskManagerRepository.Delete(taskEntity);
+        }
+
+        private async Task<Project> GetProject(TaskViewModel taskDetails)
+        {
+            return await _projectRepository.Get(taskDetails.ProjectId);
         }
 
         private async Task AddParentTask(TaskViewModel taskDetails)

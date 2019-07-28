@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TaskManager.Repository.Implementations
 {
-    public class ProjectRepository : IProjectRepository
+    public class ProjectRepository : IRepository<Project>
     {
         private readonly TaskDbContext _taskDbContext;
         public ProjectRepository(TaskDbContext taskDbContext)

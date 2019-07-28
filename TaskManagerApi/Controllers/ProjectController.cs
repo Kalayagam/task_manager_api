@@ -15,8 +15,8 @@ namespace TaskManagerApi.Controllers
     [ApiController]
     public class ProjectController : ControllerBase
     {
-        private readonly IProjectBusiness _projectBusiness;
-        public ProjectController(IProjectBusiness projectBusiness)
+        private readonly IBusiness<ProjectViewModel> _projectBusiness;
+        public ProjectController(IBusiness<ProjectViewModel> projectBusiness)
         {
             _projectBusiness = projectBusiness;
         }
