@@ -38,13 +38,7 @@ namespace TaskManagerApi
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
-
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                  {
-                      c.SwaggerEndpoint("/swagger/v1/swagger.json", "Task Manager V1");
-                  });
+                app.UseDevelopmentEnvironmentConfiguration();
             }
             app.UseCors("AllowOrigin");
             app.UseMiddleware<ExceptionMiddleware>();
