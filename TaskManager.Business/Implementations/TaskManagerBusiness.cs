@@ -10,7 +10,7 @@ using TaskManager.Repository.Interfaces;
 
 namespace TaskManager.Business.Implementations
 {
-    public class TaskManagerBusiness : IBusiness<TaskViewModel>
+    public class TaskManagerBusiness : ITaskBusiness
     {
         private readonly ITaskManagerRepository<TaskDetails> _taskManagerRepository;
         private readonly IRepository<Project> _projectRepository;
@@ -39,6 +39,19 @@ namespace TaskManager.Business.Implementations
             }
             
             return tasks;
+        }
+
+        public async Task<IEnumerable<TaskViewModel>> GetAllParent()
+        {
+            var parentTaskEntities = await _taskManagerRepository.GetAllParentTasks();
+            var parentTasks = new List<TaskViewModel>();
+            foreach (var parentTaskEntity in parentTaskEntities)
+            {
+                var taskViewModel = _mapper.Map<TaskViewModel>(parentTaskEntity);
+                parentTasks.Add(taskViewModel);
+            }
+
+            return parentTasks;
         }
 
         public async Task<TaskViewModel> Get(int id)
@@ -120,6 +133,6 @@ namespace TaskManager.Business.Implementations
         private async Task<ParentTask> GetParentTask(TaskViewModel taskDetails)
         {
             return taskDetails.ParentId == 0 ? null : await _taskManagerRepository.GetParentTask(taskDetails.ParentId);
-        }
+        }       
     }
 }

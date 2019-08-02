@@ -40,6 +40,8 @@ namespace TaskManager.Business.AutoMapper
                 .ForMember(dest => dest.ParentTask, opt => opt.Ignore())
                 .ForMember(dest => dest.Project, opt => opt.Ignore())
                 .ForMember(dest => dest.User, opt => opt.Ignore());
+
+            CreateMap<ParentTask, TaskViewModel>();
         }
 
         private void ConfigureUser()

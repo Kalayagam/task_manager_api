@@ -21,7 +21,12 @@ namespace TaskManager.Repository.Implementations
                 .Include(task => task.ParentTask)
                 .Include(task => task.User)
                 .ToListAsync();
-        }       
+        }
+
+        public async Task<IEnumerable<ParentTask>> GetAllParentTasks()
+        {
+            return await _taskDbContext.ParentTasks.ToListAsync();
+        }
 
         public async Task<TaskDetails> Get(int id)
         {
@@ -67,6 +72,6 @@ namespace TaskManager.Repository.Implementations
         {
             _taskDbContext.TaskDetails.Remove(entity);
             await _taskDbContext.SaveChangesAsync();
-        }
+        }      
     }
 }

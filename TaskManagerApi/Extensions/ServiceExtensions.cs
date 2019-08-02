@@ -63,7 +63,7 @@ namespace TaskManagerApi.Extensions
 
         private static void AddBusinessLayerDependencies(IServiceCollection services)
         {
-            services.AddTransient<IBusiness<TaskViewModel>, TaskManagerBusiness>();
+            services.AddTransient<ITaskBusiness, TaskManagerBusiness>();
             services.AddTransient<IBusiness<ProjectViewModel>, ProjectBusiness>();
             services.AddTransient<IBusiness<UserViewModel>, UserBusiness>();
         }

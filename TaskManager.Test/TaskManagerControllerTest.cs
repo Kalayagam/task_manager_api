@@ -12,12 +12,12 @@ namespace TaskManager.Test
 {
     public class TaskManagerControllerTest
     {
-        private readonly Mock<IBusiness<TaskViewModel>> _mockTaskManager;
+        private readonly Mock<ITaskBusiness> _mockTaskManager;
         private readonly TaskManagerController _sut;
 
         public TaskManagerControllerTest()
         {
-            _mockTaskManager = new Mock<IBusiness<TaskViewModel>>();
+            _mockTaskManager = new Mock<ITaskBusiness>();
             _sut = new TaskManagerController(_mockTaskManager.Object);
         }
 

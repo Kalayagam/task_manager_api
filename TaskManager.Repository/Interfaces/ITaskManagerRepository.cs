@@ -9,6 +9,8 @@ namespace TaskManager.Repository.Interfaces
 {
     public interface ITaskManagerRepository<TEntity> : IRepository<TEntity>
     {
+        Task<IEnumerable<ParentTask>> GetAllParentTasks();
+
         Task<ParentTask> GetParentTask(int id);       
 
         Task Add(ParentTask parentTask);

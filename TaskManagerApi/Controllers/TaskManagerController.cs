@@ -11,8 +11,8 @@ namespace TaskManagerApi.Controllers
     [ApiController]
     public class TaskManagerController : ControllerBase
     {
-        private readonly IBusiness<TaskViewModel> _taskManagerBusiness;
-        public TaskManagerController(IBusiness<TaskViewModel> taskManagerBusiness)
+        private readonly ITaskBusiness _taskManagerBusiness;
+        public TaskManagerController(ITaskBusiness taskManagerBusiness)
         {
             _taskManagerBusiness = taskManagerBusiness;
         }
@@ -21,6 +21,13 @@ namespace TaskManagerApi.Controllers
         public async Task<IActionResult> GetAllTasks()
         {
             var tasks = await _taskManagerBusiness.GetAll();
+            return Ok(tasks);
+        }
+
+        [HttpGet("parent")]
+        public async Task<IActionResult> GetAllParentTasks()
+        {
+            var tasks = await _taskManagerBusiness.GetAllParent();
             return Ok(tasks);
         }
 
