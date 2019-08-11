@@ -18,6 +18,8 @@ namespace TaskManager.Core.Model
 
         public int UserId { get; set; }
 
+        public string UserName { get; set; }
+
         public int TotalNumberOfTasks { get; set; }
 
         public int NumberOfTasksCompleted { get; set; }

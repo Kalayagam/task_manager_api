@@ -24,7 +24,11 @@ namespace TaskManager.Core
 
         public int ProjectId { get; set; }
 
+        public string ProjectName { get; set; }
+
         public int UserId { get; set; }
+
+        public string UserName { get; set; }
 
         [Range(0,1)]
         public int Status { get; set; }
